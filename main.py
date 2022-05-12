@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 archivo = pd.read_csv('API_SP.POP.TOTL_DS2_es_csv_v2_4004971.csv', header=2, keep_default_na=False)
 
 paisabuscar="México"
-anio = 2025
+anio = 2022
 
 index = archivo.index
 pais = archivo["Country Name"] == paisabuscar
