@@ -3,12 +3,19 @@ from tkinter import ttk
 import pandas as pd
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 import numpy as np
 
 root = tkinter.Tk()
-root.geometry("1280x900")
+ancho_ventana = 1280
+alto_ventana = 900
+x_ventana = root.winfo_screenwidth() // 2 - ancho_ventana // 2
+y_ventana = root.winfo_screenheight() // 2 - alto_ventana // 2
+posicion = str(ancho_ventana) + "x" + str(alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
+root.geometry(posicion)
+root.resizable(0,0)
 root.wm_title("Calculo de población")
 archivo = pd.read_csv('API_SP.POP.TOTL_DS2_es_csv_v2_4004971.csv', header=2, keep_default_na=False)
 paises = archivo['Country Name'].tolist()
@@ -37,13 +44,14 @@ def calcular():
             poblacion = poblacion.astype(int)
             X = anios[:, np.newaxis]
             poblacion = (poblacion)
-            while True:
+            score = 0
+            while score < 0.85 :
                 X_train, Xtest, y_train, y_test = train_test_split(X, poblacion)
-                mlr = MLPRegressor(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(3, 3), random_state=1, max_iter=1000)
+                mlr = MLPRegressor(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(3, 3), random_state=1, max_iter=10000)
                 mlr.fit(X_train, y_train)
                 score = mlr.score(X_train, y_train)
-                if (score > 0.95):
-                    break
+                #if (score > 0.85):
+                 #   break
             prediccion = mlr.predict([[anio]])
             numero = "{:,}".format(int(prediccion))
             entry.delete(0, "end")
@@ -58,10 +66,11 @@ def calcular():
             ax.get_yaxis().get_major_formatter().set_scientific(False)
             canvas.draw()
             canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
-            label2.config(text="La poblacion estimada para el año: "+str(anio)+" en: "+paisabuscar+" será de: "+str(numero) + " con un score de: " +str(score),font=("Courier", 15),fg= "black")
+            #"{:.2f}".format(3.1415926)
+            print (score)
+            label2.config(text="La poblacion estimada para el año: "+str(anio)+" en: "+paisabuscar+" será de: "+str(numero) + " con un score de: " +str("{:.6f}".format(score)),font=("Courier", 15),fg= "black")
         else:
             print("País no encontrado")
-
 
 button1 = tkinter.Button(master=root, text="Calcular", command=calcular, font=("Courier", 15))
 button1.pack(side=tkinter.BOTTOM)
