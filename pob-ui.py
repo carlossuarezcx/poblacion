@@ -46,9 +46,9 @@ def calcular():
             poblacion = (poblacion)
             score = 0
             i = 0
-            while i<300:
+            while i<1000:
                 X_train, Xtest, y_train, y_test = train_test_split(X, poblacion)
-                mlr = MLPRegressor(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(3, 3), random_state=1, max_iter=1000)
+                mlr = MLPRegressor(solver='lbfgs', alpha=1e-8, hidden_layer_sizes=(3, 3), random_state=1, max_iter=1000)
                 mlr.fit(X_train, y_train)
                 score = mlr.score(X_train, y_train)
                 #print(score)
@@ -60,7 +60,7 @@ def calcular():
             else:
                 prediccion = mlr.predict([[anio]])
                 numero = "{:,}".format(int(prediccion))
-                entry.delete(0, "end")
+                #entry.delete(0, "end")
                 ax.scatter(anios, poblacion)
                 ax.scatter(anio, prediccion, c="red")
                 ax.annotate(numero, (anio, prediccion))
