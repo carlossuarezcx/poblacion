@@ -45,30 +45,36 @@ def calcular():
             X = anios[:, np.newaxis]
             poblacion = (poblacion)
             score = 0
-            while score < 0.85 :
+            i = 0
+            while i<300:
                 X_train, Xtest, y_train, y_test = train_test_split(X, poblacion)
-                mlr = MLPRegressor(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(3, 3), random_state=1, max_iter=10000)
+                mlr = MLPRegressor(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(3, 3), random_state=1, max_iter=1000)
                 mlr.fit(X_train, y_train)
                 score = mlr.score(X_train, y_train)
-                #if (score > 0.85):
-                 #   break
-            prediccion = mlr.predict([[anio]])
-            numero = "{:,}".format(int(prediccion))
-            entry.delete(0, "end")
-            ax.scatter(anios, poblacion)
-            ax.scatter(anio, prediccion, c="red")
-            ax.annotate(numero, (anio, prediccion))
-            ax.set_xlabel('Años')
-            ax.set_ylabel('Poblacion')
-            ax.get_xaxis().get_major_formatter().set_useOffset(False)
-            ax.get_xaxis().get_major_formatter().set_scientific(False)
-            ax.get_yaxis().get_major_formatter().set_useOffset(False)
-            ax.get_yaxis().get_major_formatter().set_scientific(False)
-            canvas.draw()
-            canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
-            #"{:.2f}".format(3.1415926)
-            print (score)
-            label2.config(text="La poblacion estimada para el año: "+str(anio)+" en: "+paisabuscar+" será de: "+str(numero) + " con un score de: " +str("{:.6f}".format(score)),font=("Courier", 15),fg= "black")
+                #print(score)
+                i+=1
+                if (score > 0.85):
+                    break
+            if score < 0.85:
+                label2.config(text="No se cuenta con la información suficiente, porcentaje muy bajo:" + str("{:.2f}".format(score*100))+"%",font=("Courier", 15),fg= "black")
+            else:
+                prediccion = mlr.predict([[anio]])
+                numero = "{:,}".format(int(prediccion))
+                entry.delete(0, "end")
+                ax.scatter(anios, poblacion)
+                ax.scatter(anio, prediccion, c="red")
+                ax.annotate(numero, (anio, prediccion))
+                ax.set_xlabel('Años')
+                ax.set_ylabel('Poblacion')
+                ax.get_xaxis().get_major_formatter().set_useOffset(False)
+                ax.get_xaxis().get_major_formatter().set_scientific(False)
+                ax.get_yaxis().get_major_formatter().set_useOffset(False)
+                ax.get_yaxis().get_major_formatter().set_scientific(False)
+                canvas.draw()
+                canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+                #"{:.2f}".format(3.1415926)
+                #print (score)
+                label2.config(text="La poblacion estimada para el año: "+str(anio)+" en: "+paisabuscar+" será de: "+str(numero) + " con un porcentaje de: " +str("{:.6f}".format(score*100))+"%",font=("Courier", 15),fg= "black")
         else:
             print("País no encontrado")
 
